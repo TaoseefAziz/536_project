@@ -2,6 +2,7 @@ import pdfplumber
 import docx
 import os
 
+
 def extract_text_from_document(file):
     """
     Extracts text from a PDF or DOCX file-like object.

@@ -9,7 +9,7 @@ def get_job_description(url):
         soup = BeautifulSoup(response.content, 'html.parser')
         # For this sample, we extract all text from the <body> tag.
         text = soup.body.get_text(separator="\n", strip=True)
-        return text
+        return f"JOB DESCRIPTION:\n{text}"
     except Exception as e:
         return f"Error retrieving job description: {str(e)}"
 
