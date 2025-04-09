@@ -109,7 +109,7 @@ def generate_resume_optimization(master_resume_text, job_description, use_local_
         "6. FORMATTING: Ensure the output is LaTeX-compatible without requiring further formatting adjustments.\n"
         "7. LENGTH: The final resume must fit on a single page - be concise and selective.\n"
         "8. OUTPUT: Provide ONLY the optimized resume text without explanations, notes, or additional commentary.\n"
-        "9. LATEX GUIDELINES: Do NOT use any special fontspec packages.\n\n"
+        "9. LATEX GUIDELINES: LaTeX output should be compatible with pdfLaTeX.\n\n"
     )
     
     user_prompt = (
@@ -120,7 +120,7 @@ def generate_resume_optimization(master_resume_text, job_description, use_local_
         "MASTER RESUME:\n"
         f"{master_resume_text}\n\n"
         "Create a focused single-page resume that highlights relevant experiences and skills from my master resume "
-        "that best match these job requirements. Provide only the LaTeX-compatible resume text."
+        "that best match these job requirements. Provide only the pdfLaTeX-compatible resume text."
     )
     
     if use_local_llm:
