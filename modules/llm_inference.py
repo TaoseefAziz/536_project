@@ -9,10 +9,10 @@ def generate_with_ollama(prompt, model="llama3.2:latest"):
     """
     try:
         result = subprocess.run(
-        ["ollama", "run", model, prompt],
-        capture_output=True,
-        text=True,
-        check=True
+            ["ollama", "run", model, prompt],
+            capture_output=True,
+            text=True,
+            check=True
         )
         output = result.stdout.strip()
         return output
@@ -20,36 +20,93 @@ def generate_with_ollama(prompt, model="llama3.2:latest"):
         return f"Error during local LLM call: {e.stderr}"
 
 
-
 def generate_resume_optimization(master_resume_text, job_description, use_local_llm=False):
     """
-    Generates an optimized resume text using the provided master resume and job description.
-    If use_local_llm is True, calls the local Ollama model; otherwise, uses the OpenAI API.
+    Generates an optimized resume using the master resume and job description.
+    Returns a LaTeX-friendly structured output using SECTION headers.
     """
-    prompt = (
-        "You are a resume optimization assistant. "
-        "Given the following master resume and job description, generate an optimized resume "
-        "tailored for the job. Emphasize relevant skills and experiences.\n\n"
-        "Master Resume:\n"
-        f"{master_resume_text}\n\n"
-        "Job Description:\n"
-        f"{job_description}\n\n"
-        "Optimized Resume:"
-    )
+    prompt = rf"""
+You are an expert resume optimization assistant.
+
+Your task is to generate an optimized resume based on the candidate's master resume and a specific job description.
+
+🎯 GOAL:
+- Extract **ALL relevant** experience, education, skills, certifications, achievements, and tools/platforms used from the master resume.
+- Rephrase or enhance it only if necessary to match the job description.
+- Keep every key accomplishment and number intact.
+
+📌 FORMAT:
+Respond using this **exact SECTION-based format**. Do **NOT** use LaTeX commands like \section*.  
+Use LaTeX-friendly formatting **inside sections only** (e.g., \textbf{{}}, \begin{{itemize}}...\end{{itemize}}).
+
+---
+
+SECTION: Name  
+<Full name>
+
+SECTION: Location  
+<City, State>
+
+SECTION: Email  
+<Email address>
+
+SECTION: Phone  
+<Phone number>
+
+SECTION: LinkedIn  
+<LinkedIn URL>
+
+SECTION: GitHub  
+<GitHub URL>
+
+SECTION: Summary  
+<2–4 sentence summary of the candidate’s strengths and experience>
+
+SECTION: Education  
+<Include degree, institution, location, and dates. Use LaTeX formatting.>
+
+SECTION: Work Experience  
+Use \begin{{itemize}}...\end{{itemize}} with rich bullet points, responsibilities, impact metrics, and tools used.
+
+SECTION: Teaching & Mentorship  
+<Optional — only include if the original resume has it. Use bullet formatting.>
+
+SECTION: Projects  
+<List projects with \textbf{{title}} and bullet point highlights. Show outcomes and tech used.>
+
+SECTION: Skills  
+Group into: Design Tools, Web Tech, Soft Skills, etc. Use LaTeX \textbf{{}} and commas.
+
+---
+
+✅ Use real values.  
+❌ Do not include placeholder text or brackets.  
+✅ Keep numbers (e.g., "boosted engagement by 32%").  
+✅ Retain brand names, platforms (Adobe, HTML/CSS, etc.), and job titles.
+
+---
+
+Master Resume:
+{master_resume_text}
+
+Job Description:
+{job_description}
+
+Optimized Resume:
+"""
+
+
+
     if use_local_llm:
-        # Call the local Ollama model using the helper function
         return generate_with_ollama(prompt)
     else:
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",  # Replace with your specific model name if needed.
+                model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
-                max_tokens=1024
+                max_tokens=1800
             )
-            optimized_resume = response.choices[0].message.content.strip()
-            return optimized_resume
+            return response.choices[0].message.content.strip()
         except Exception as e:
             return f"Error during OpenAI API call: {str(e)}"
-
-
