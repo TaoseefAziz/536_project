@@ -32,7 +32,8 @@ def main():
                 # 1. Extract text from the uploaded document.
                 with st.spinner("Extracting text from document..."):
                     master_resume_text = document_extractor.extract_text_from_document(resume_file)
-                
+                st.text_area("Extracted Resume Text", master_resume_text, height=300)
+
                 # If extraction fails due to unsupported format, show error.
                 if master_resume_text.startswith("Unsupported file format"):
                     st.error(master_resume_text)
@@ -48,6 +49,8 @@ def main():
                         master_resume_text, job_description, use_local_llm=use_local_llm
                     )
                 
+                
+
                 st.subheader("Optimized Resume Text")
                 st.text_area("Result", optimized_resume, height=300)
 

@@ -1,0 +1,77 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[a4paper,margin=0.75in]{geometry}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\sloppy
+
+\definecolor{darkblue}{RGB}{0,0,139}
+\titleformat{\section}{\large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+
+\begin{document}
+
+%----------------- Header -----------------%
+\begin{center}
+    {% if name %}
+        {\LARGE \textbf{ {{ name | escape_tex }} }} \\
+    {% endif %}
+
+    \small
+    {% if location or email or phone %}
+        {% if location %}{{ location | escape_tex }}{% endif %}
+        {% if email %} \quad | \quad \href{mailto:{{ email | escape_tex }}}{{ email | escape_tex }}{% endif %}
+        {% if phone %} \quad | \quad {{ phone | escape_tex }}{% endif %} \\[0.5em]
+    {% endif %}
+
+    {% if linkedin or github %}
+        {% if linkedin %}\href{ {{ linkedin | escape_tex }} }{LinkedIn}{% endif %}
+        {% if github %} \quad | \quad \href{ {{ github | escape_tex }} }{GitHub}{% endif %}
+    {% endif %}
+\end{center}
+
+\vspace{10pt}
+
+%----------------- Summary -----------------%
+{% if summary %}
+\section*{Summary}
+{{ summary | escape_tex }}
+\vspace{6pt}
+{% endif %}
+
+%----------------- Education -----------------%
+{% if education %}
+\section*{Education}
+{{ education }}
+\vspace{6pt}
+{% endif %}
+
+%----------------- Work Experience -----------------%
+{% if experience %}
+\section*{Work Experience}
+{{ experience }}
+\vspace{6pt}
+{% endif %}
+
+%----------------- Teaching \& Mentorship -----------------%
+{% if mentorship %}
+\section*{Teaching \& Mentorship}
+{{ mentorship }}
+\vspace{6pt}
+{% endif %}
+
+%----------------- Projects -----------------%
+{% if projects %}
+\section*{Projects}
+{{ projects }}
+\vspace{6pt}
+{% endif %}
+
+%----------------- Skills -----------------%
+{% if skills %}
+\section*{Skills}
+{{ skills }}
+{% endif %}
+
+\end{document}
