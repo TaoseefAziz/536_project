@@ -3,6 +3,7 @@ import docx
 import os
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 
+
 def extract_text_from_document(file):
     """
     Extracts text from a PDF or DOCX file-like object, including paragraphs, tables, and hyperlinks.
