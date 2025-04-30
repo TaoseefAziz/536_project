@@ -1,2 +1,4 @@
 536env/bin/activate
 /536env
+/modules/__pycache__
+/resume_env
