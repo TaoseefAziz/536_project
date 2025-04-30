@@ -10,6 +10,13 @@ def main():
     llm_option = st.sidebar.radio("Select LLM Option:", ("OpenAI API (4o mini)", "Local LLM (Ollama - Stub)"))
     use_local_llm = True if llm_option == "Local LLM (Ollama - Stub)" else False
 
+    # Zoha cold email ────────────────────────────────────────────────────────
+    generate_email = st.sidebar.checkbox(
+        "Generate Personalized-Email (local LLM only)",
+        value=True
+    )
+    # Zoha cold email ────────────────────────────────────────────────────────
+
     # File uploader for the master resume.
     resume_file = st.file_uploader("Upload your master resume (PDF or DOCX)", type=["pdf", "docx"])
 
@@ -70,6 +77,22 @@ def main():
                         )
                 else:
                     st.error(f"Failed to generate PDF: {pdf_result}")
-
+# ─── Zoha cold email───
+                if generate_email:
+                    with st.spinner("Drafting personalised email (local model)…"):
+                        cold_email = llm_inference.generate_cold_email(
+                            master_resume_text,   # use the same variable from above
+                            job_description,      # ditto
+                            use_local_llm=True    # force local model
+                        )
+                    st.subheader("Personalized-Email Draft")
+                    st.text_area("Personalized-Email", cold_email, height=200)
+                    st.download_button(
+                        "Download Personalized-Email (.txt)",
+                        data=cold_email,
+                        file_name="Personalized-email.txt",
+                        mime="text/plain"
+                    )
+# ─── Zoha cold email───
 if __name__ == "__main__":
     main()

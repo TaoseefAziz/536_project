@@ -110,3 +110,52 @@ Optimized Resume:
             return response.choices[0].message.content.strip()
         except Exception as e:
             return f"Error during OpenAI API call: {str(e)}"
+
+
+# ─── Zoha cold email───
+def generate_cold_email(
+    master_resume_text: str,
+    job_description: str,
+    *,
+    recipient_title: str = "Hiring Manager",
+    use_local_llm: bool = False
+) -> str:
+    """
+    Creates a concise (≤150 words) cold-outreach email that:
+    • greets the recipient (by title),
+    • references the exact job title & company if present,
+    • highlights 1–2 keyword-matching strengths from the resume,
+    • ends with a polite call-to-action.
+    """
+    prompt = f"""
+You are an expert career-coach copywriter.
+
+Task: Write a short, persuasive cold-outreach email (max 150 words)
+to **{recipient_title}** for the role described below, using the
+candidate information provided. Do not invent achievements
+that aren’t in the resume.
+
+Tone: warm, professional, confident.
+Style: plain text, no markup.
+
+Master Resume (full):
+\"\"\"{master_resume_text}\"\"\"
+
+Job Description:
+\"\"\"{job_description}\"\"\"
+
+Cold Email:
+"""
+    if use_local_llm:
+        return generate_with_ollama(prompt)
+    try:
+        resp = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.6,
+            max_tokens=350
+        )
+        return resp.choices[0].message.content.strip()
+    except Exception as e:
+        return f"Error during OpenAI API call: {e}"
+# ─── Zoha cold email───
