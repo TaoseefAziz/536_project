@@ -7,12 +7,12 @@ def main():
     
     # Sidebar for LLM option selection.
     st.sidebar.header("Settings")
-    llm_option = st.sidebar.radio("Select LLM Option:", ("OpenAI API (4o mini)", "Local LLM (Ollama - Stub)"))
-    use_local_llm = True if llm_option == "Local LLM (Ollama - Stub)" else False
+    llm_option = st.sidebar.radio("Select LLM Option:", ("OpenAI API (4o mini)", "Local LLM (Ollama)"))
+    use_local_llm = True if llm_option == "Local LLM (Ollama)" else False
 
     # Zoha cold email ────────────────────────────────────────────────────────
     generate_email = st.sidebar.checkbox(
-        "Generate Personalized-Email (local LLM only)",
+        "Generate Personalized-Email",
         value=True
     )
     # Zoha cold email ────────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ def main():
                 # 3. Generate the optimized resume using LLM.
                 with st.spinner("Generating optimized resume..."):
                     optimized_resume = llm_inference.generate_resume_optimization(
-                        master_resume_text, job_description, use_local_llm=use_local_llm
+                        master_resume_text, job_description, use_local_llm=False
                     )
                 
                 
@@ -82,8 +82,7 @@ def main():
                     with st.spinner("Drafting personalised email (local model)…"):
                         cold_email = llm_inference.generate_cold_email(
                             master_resume_text,   # use the same variable from above
-                            job_description,      # ditto
-                            use_local_llm=True    # force local model
+                            job_description   # force local model
                         )
                     st.subheader("Personalized-Email Draft")
                     st.text_area("Personalized-Email", cold_email, height=200)
